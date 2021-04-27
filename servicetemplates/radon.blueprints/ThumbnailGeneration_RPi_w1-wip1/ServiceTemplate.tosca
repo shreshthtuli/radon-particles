@@ -8,7 +8,7 @@ topology_template:
       type: radon.nodes.rpi.RPiMinIOBuckets
       metadata:
         x: "352"
-        y: "192"
+        y: "112"
         displayName: "RPiMinIOBuckets"
       properties:
         minio_ip: "192.168.34.233"
@@ -19,8 +19,8 @@ topology_template:
     RPiOpenFaaSFunction_1:
       type: radon.nodes.rpi.RPiOpenFaaSFunction
       metadata:
-        x: "355"
-        y: "289"
+        x: "352"
+        y: "192"
         displayName: "RPiOpenFaaSFunction"
       properties:
         resize_function_name: "var-function-name"
@@ -29,8 +29,8 @@ topology_template:
     RPiMinIOBucketNotification_2:
       type: radon.nodes.rpi.RPiMinIOBucketNotification
       metadata:
-        x: "348"
-        y: "381"
+        x: "352"
+        y: "272"
         displayName: "RPiMinIOBucketNotification"
       properties:
         node_ip: "192.168.34.233"
