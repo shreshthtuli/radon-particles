@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  remote_user: pi
+  gather_facts: no
+  tasks:
+  - name: Kill all MinIO processes
+    shell: "kill $(ps -ef | grep 'minio' | awk '{print $2}')"
+    ignore_errors: yes
+...

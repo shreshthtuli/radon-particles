@@ -1,0 +1,83 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  radon.nodes.rpi.RPiFunction:
+    derived_from: radon.nodes.abstract.Function
+    metadata:
+      targetNamespace: "radon.nodes.rpi"
+      abstract: "false"
+      final: "false"
+    properties:
+      image_name:
+        type: string
+        description: Name of already existing image in docker registry.
+      function_name:
+        type: string
+        description: Name of the new OpenFaaS function.
+    attributes:
+      image_name:
+        type: string
+      function_name:
+        type: string
+    requirements:
+      - host:
+          capability: tosca.capabilities.Container
+          node: radon.nodes.rpi.RPiPlatform
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+      - invoker:
+          capability: radon.capabilities.Invocable
+          node: radon.nodes.minio.MinIOBucket
+          relationship: radon.relationships.Triggers
+          occurrences: [ 0, UNBOUNDED ]
+      - endpoint:
+          capability: tosca.capabilities.Endpoint
+          node: radon.nodes.minio.MinIOBucket
+          relationship: radon.relationships.ConnectsTo
+          occurrences: [ 0, UNBOUNDED ]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        inputs:
+          image_name:
+            type: string
+            required: true
+            default: { get_property: [ SELF, image_name ] }
+          function_name:
+            type: string
+            required: true
+            default: { get_property: [ SELF, function_name ] }
+          hostname:
+            type: string
+            required: true
+            default: { get_property: [ SELF, host, hostname ] }
+          minio_user:
+            type: string
+            required: true
+            default: { get_property: [ SELF, host, minio_user ] }
+          minio_pass:
+            type: string
+            required: true
+            default: { get_property: [ SELF, host, minio_pass ] }
+          bucket_in:
+            type: string
+            required: true
+            default: { get_property: [ SELF, invoker, bucket_name ] }
+          bucket_out:
+            type: string
+            required: true
+            default: { get_property: [ SELF, endpoint, bucket_name ] }
+        operations:
+          create:
+            implementation:
+              primary: create
+          delete:
+            implementation:
+              primary: delete
+    artifacts:
+      create:
+        type: radon.artifacts.Ansible
+        file: create.yml
+      delete:
+        type: radon.artifacts.Ansible
+        file: delete.yml

@@ -3,29 +3,41 @@
   remote_user: pi
   gather_facts: no
   tasks:
-  - name: Get password
-    shell: cat ~/faas_pass.txt
-    register: mypass
+  - name: Check Kubectl installation and Kubeconfig
+    shell: "{{ item }}"
+    with_items:
+      - export KUBECONFIG=~/.kube/config
+      - kubectl config set-context default
+      - kubectl create secret docker-registry secret --docker-username=admin --docker-password=XXXX 
 
-  - name: POST request for OpenFaaS API that deploys a new image-resize function
-    uri:
-      url: "http://admin:{{ mypass.stdout }}@{{ node_ip }}:31112/system/functions"
-      method: POST
-      body: "{  \"service\": \"{{ resize_function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ resize_image_name }}:latest\",  \"envProcess\": \"python index.py\" }"
-      body_format: json
-      status_code: 202
-    register: post_result
-    check_mode: false
-    ignore_errors: true
-    changed_when: false
+# Installation of OpenFaaS
+  - name: Install OpenFAAS
+    shell: "arkade install openfaas --kubeconfig ~/.kube/config"
 
-  - name: PUT request if POST fails (update function deploy) for the image-resize function
-    uri:
-      url: "http://admin:{{ mypass.stdout }}@{{ node_ip }}:31112/system/functions"
-      password: mypass.stdout
-      body: "{  \"service\": \"{{ resize_function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ resize_image_name }}:latest\",  \"envProcess\": \"python index.py\" }"
-      body_format: json
-      status_code: 202
-    ignore_errors: yes
-    when: post_result["non_existent_tag"] is not defined
+  - name: Install faas-cli
+    shell: "{{ item }}"
+    with_items:
+      - arkade get faas-cli
+      - curl -SLsf https://cli.openfaas.com | sudo sh
+      - kubectl port-forward -n openfaas svc/gateway 8080:8080 &
+      - kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/radonpi/kubeconfig | base64 --decode > ~/faas_pass.txt
+
+  - name: Login FAAS CLI
+    shell: "kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/radonpi/kubeconfig | base64 --decode | faas-cli login --username admin --password-stdin"
+
+  - name: Deploy sample function
+    shell: "faas-cli store deploy figlet"
+
+# Installation of MinIO
+  - name: Install and run MinIO server
+    shell: "{{ item }}"
+    with_items:
+      - wget https://dl.minio.io/server/minio/release/linux-arm/minio
+      - wget https://dl.minio.io/client/mc/release/linux-arm/mc
+      - chmod +x mc
+      - chmod +x minio
+      - sudo ln -s ./minio /usr/bin/minio
+      - sudo ln -s ./mc /usr/bin/mc
+      - MINIO_ROOT_USER={{ minio_user }} MINIO_ROOT_PASSWORD={{ minio_pass }} ./minio server ~ &
+      - mc alias set myminio http://{{ hostname }}:9000 {{ minio_user }} {{ minio_pass }}
 ...

@@ -1,45 +1,50 @@
 tosca_definitions_version: tosca_simple_yaml_1_3
 
 node_types:
-  radon.nodes.rpi.RPiOpenFaaSFunction:
-    derived_from: tosca.nodes.SoftwareComponent
+  radon.nodes.rpi.RPiPlatform:
+    derived_from: radon.nodes.abstract.CloudPlatform
     metadata:
       targetNamespace: "radon.nodes.rpi"
       abstract: "false"
       final: "false"
     attributes:
-      resize_function_name:
+      hostname:
         type: string
-      node_ip:
+      minio_user:
         type: string
-      resize_image_name:
+      minio_pass:
         type: string
     properties:
-      resize_function_name:
+      hostname:
         type: string
-        description: Name of the new OpenFaaS image-resize function.
-      node_ip:
+        description: Hostname of the RPi Master node.
+      minio_user:
         type: string
-        description: IP of the VM running the OpenFaaS
-      resize_image_name:
+        description: Username of the MinIO instance.
+      minio_pass:
         type: string
-        description: Name of already existing image with image-resize functionality.
+        description: Password of the MinIO instance.
+    capabilities:
+      host:
+        occurrences: [ 1, UNBOUNDED ]
+        valid_source_types: [ radon.nodes.minio.MinIOBucket, radon.nodes.rpi.RPiFunction ]
+        type: tosca.capabilities.Container
     interfaces:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
         inputs:
-          resize_function_name:
+          hostname:
             type: string
             required: true
-            default: { get_property: [ SELF, resize_function_name ] }
-          node_ip:
+            default: { get_property: [ SELF, hostname ] }
+          minio_user:
             type: string
             required: true
-            default: { get_property: [ SELF, node_ip ] }
-          resize_image_name:
+            default: { get_property: [ SELF, minio_user ] }
+          minio_pass:
             type: string
             required: true
-            default: { get_property: [ SELF, resize_image_name ] }
+            default: { get_property: [ SELF, minio_pass ] }
         operations:
           create:
             implementation:
@@ -53,4 +58,4 @@ node_types:
         file: create.yml
       delete:
         type: radon.artifacts.Ansible
-        file: remove.yml
+        file: delete.yml

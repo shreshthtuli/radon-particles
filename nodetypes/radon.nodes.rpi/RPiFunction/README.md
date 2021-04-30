@@ -7,7 +7,7 @@ A node type that represents RaspberryPi cluster.
 
 | Name | URI | Version | Derived From |
 |:---- |:--- |:------- |:------------ |
-| `RPiPlatform` | `radon.nodes.rpi.RPiPlatform` | 1.0.0 | `radon.nodes.abstract.CloudPlatform` |
+| `RPiFunction` | `radon.nodes.rpi.RPiFunction` | 1.0.0 | `radon.nodes.abstract.Function` |
 
 ### Attributes
 
