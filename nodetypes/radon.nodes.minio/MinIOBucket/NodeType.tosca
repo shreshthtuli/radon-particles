@@ -22,7 +22,7 @@ node_types:
           occurrences: [ 0, UNBOUNDED ]
       - invoker:
           capability: radon.capabilities.Invocable
-          node: radon.nodes.abstract.Function
+          node: radon.nodes.rpi.RPiFunction
           relationship: radon.relationships.rpi.RPiTriggers
           occurrences: [ 0, UNBOUNDED ]
     interfaces:
