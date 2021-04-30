@@ -1,0 +1,56 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  radon.nodes.rpi.RPiOpenFaaSFunction:
+    derived_from: tosca.nodes.SoftwareComponent
+    metadata:
+      targetNamespace: "radon.nodes.rpi"
+      abstract: "false"
+      final: "false"
+    attributes:
+      resize_function_name:
+        type: string
+      node_ip:
+        type: string
+      resize_image_name:
+        type: string
+    properties:
+      resize_function_name:
+        type: string
+        description: Name of the new OpenFaaS image-resize function.
+      node_ip:
+        type: string
+        description: IP of the VM running the OpenFaaS
+      resize_image_name:
+        type: string
+        description: Name of already existing image with image-resize functionality.
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        inputs:
+          resize_function_name:
+            type: string
+            required: true
+            default: { get_property: [ SELF, resize_function_name ] }
+          node_ip:
+            type: string
+            required: true
+            default: { get_property: [ SELF, node_ip ] }
+          resize_image_name:
+            type: string
+            required: true
+            default: { get_property: [ SELF, resize_image_name ] }
+        operations:
+          create:
+            implementation:
+              primary: create
+          delete:
+            implementation:
+              primary: delete
+    artifacts:
+      create:
+        type: radon.artifacts.Ansible
+        file: create.yml
+      delete:
+        type: radon.artifacts.Ansible
+        file: remove.yml
