@@ -21,7 +21,7 @@ topology_template:
             capability: host
         - invoker:
             node: RPiFunction_0
-            relationship: con_MinIOTriggers_0
+            relationship: con_RPiTriggers_0
             capability: invocable
     MinIOBucket_2:
       type: radon.nodes.minio.MinIOBucket
@@ -75,7 +75,7 @@ topology_template:
       type: tosca.relationships.HostedOn
     con_ConnectsTo_0:
       type: radon.relationships.ConnectsTo
-    con_MinIOTriggers_0:
-      type: radon.relationships.minio.MinIOTriggers
+    con_RPiTriggers_0:
+      type: radon.relationships.rpi.RPiTriggers
       properties:
         events: "s3:ObjectCreated:*"
