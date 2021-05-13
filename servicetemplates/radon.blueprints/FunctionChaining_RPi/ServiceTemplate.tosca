@@ -1,0 +1,128 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  targetNamespace: "radon.blueprints"
+topology_template:
+  node_templates:
+    MinIOBucket_1:
+      type: radon.nodes.minio.MinIOBucket
+      metadata:
+        x: "303"
+        y: "302"
+        displayName: "SourceBucket"
+      properties:
+        size: "0 MB"
+        bucket_name: "original"
+        name: "SourceBucket"
+      requirements:
+        - host:
+            node: RPiPlatform_0
+            relationship: con_HostedOn_1
+            capability: host
+        - invoker:
+            node: RPiFunction_0
+            relationship: con_RPiTriggers_0
+            capability: invocable
+    MinIOBucket_2:
+      type: radon.nodes.minio.MinIOBucket
+      metadata:
+        x: "924"
+        y: "289"
+        displayName: "IntermediateBucket"
+      properties:
+        size: "0 MB"
+        bucket_name: "resized"
+        name: "IntermediateBucket"
+      requirements:
+        - host:
+            node: RPiPlatform_0
+            relationship: con_HostedOn_2
+            capability: host
+        - invoker:
+            node: RPiFunction_1
+            relationship: con_RPiTriggers_1
+            capability: invocable
+    MinIOBucket_3:
+      type: radon.nodes.minio.MinIOBucket
+      metadata:
+        x: "1561"
+        y: "285"
+        displayName: "TargetBucket"
+      properties:
+        size: "0 MB"
+        bucket_name: "styled"
+        name: "TargetBucket"
+      requirements:
+        - host:
+            node: RPiPlatform_0
+            relationship: con_HostedOn_3
+            capability: host
+    RPiFunction_0:
+      type: radon.nodes.rpi.RPiFunction
+      metadata:
+        x: "602"
+        y: "135"
+        displayName: "ThumbnailGeneration"
+      properties:
+        image_name: "localhost:5000/img-resize"
+        function_name: "img-resize"
+      requirements:
+        - host:
+            node: RPiPlatform_0
+            relationship: con_HostedOn_0
+            capability: host
+        - endpoint:
+            node: MinIOBucket_2
+            relationship: con_ConnectsTo_0
+            capability: storage_endpoint
+    RPiFunction_1:
+      type: radon.nodes.rpi.RPiFunction
+      metadata:
+        x: "1248"
+        y: "137"
+        displayName: "StyleTransfer"
+      properties:
+        image_name: "localhost:5000/style-transfer"
+        function_name: "style-transfer"
+      requirements:
+        - host:
+            node: RPiPlatform_0
+            relationship: con_HostedOn_4
+            capability: host
+        - endpoint:
+            node: MinIOBucket_3
+            relationship: con_ConnectsTo_1
+            capability: storage_endpoint
+    RPiPlatform_0:
+      type: radon.nodes.rpi.RPiPlatform
+      metadata:
+        x: "928"
+        y: "532"
+        displayName: "RPiPlatform"
+      properties:
+        hostname: "master"
+        minio_user: "admin"
+        minio_pass: "password"
+  relationship_templates:
+    con_HostedOn_2:
+      type: tosca.relationships.HostedOn
+    con_HostedOn_3:
+      type: tosca.relationships.HostedOn
+    con_HostedOn_0:
+      type: tosca.relationships.HostedOn
+    con_HostedOn_1:
+      type: tosca.relationships.HostedOn
+    con_ConnectsTo_0:
+      type: radon.relationships.ConnectsTo
+    con_ConnectsTo_1:
+      type: radon.relationships.ConnectsTo
+    con_RPiTriggers_0:
+      type: radon.relationships.rpi.RPiTriggers
+      properties:
+        events: "s3:ObjectCreated:*"
+    con_RPiTriggers_1:
+      type: radon.relationships.rpi.RPiTriggers
+      properties:
+        events: "s3:ObjectCreated:*"
+    con_HostedOn_4:
+      type: tosca.relationships.HostedOn
