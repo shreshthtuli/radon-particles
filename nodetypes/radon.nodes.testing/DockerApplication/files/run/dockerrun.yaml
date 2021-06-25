@@ -5,4 +5,4 @@
   tasks:
     - name: Execute Docker application
       shell:
-        cmd: ssh.exe root@{{ host_ip }} 'docker run -itd {{ image }} \"{{ cmd }}\"'
+        cmd: ssh.exe root@{{ host_ip }} 'docker run -itd {{ image }} "{{ cmd }}"'
