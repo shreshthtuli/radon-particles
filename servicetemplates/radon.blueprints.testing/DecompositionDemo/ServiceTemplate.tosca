@@ -23,7 +23,7 @@ topology_template:
       properties:
         image: "ubuntu"
         name: "test"
-        cmd: " "
+        cmd: "ls"
       requirements:
         - host:
             node: DockerEngine_0
