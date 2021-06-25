@@ -22,3 +22,17 @@ node_types:
     interfaces:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          create:
+            inputs:
+              host_ip:
+                type: string
+                required: false
+                default: { get_attribute: [ SELF, public_address] }
+            implementation:
+              primary: install
+              timeout: 0
+    artifacts:
+      install:
+        type: radon.artifacts.Ansible
+        file: dockerinstall.yaml

@@ -42,7 +42,19 @@ node_types:
             implementation:
               primary: run
               timeout: 0
+          delete:
+            inputs:
+              host_ip:
+                type: string
+                required: true
+                default: { get_property: [ SELF, host, public_address ] }
+            implementation:
+              primary: del
+              timeout: 0
     artifacts:
+      del:
+        type: radon.artifacts.Ansible
+        file: docekrdel.yaml
       run:
         type: radon.artifacts.Ansible
         file: dockerrun.yaml
