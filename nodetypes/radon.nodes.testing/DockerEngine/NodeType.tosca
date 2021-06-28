@@ -1,0 +1,44 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  radon.nodes.testing.DockerEngine:
+    derived_from: radon.nodes.abstract.ContainerRuntime
+    metadata:
+      targetNamespace: "radon.nodes.testing"
+      abstract: "false"
+      final: "false"
+    capabilities:
+      host:
+        occurrences: [ 1, 1 ]
+        valid_source_types: [ radon.nodes.testing.DockerApplication ]
+        type: radon.capabilities.container.DockerRuntime
+    requirements:
+      - host:
+          capability: tosca.capabilities.Compute
+          node: radon.nodes.OperableCompute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    attributes:
+      public_address:
+        type: string
+        default: { get_property: [ SELF, host, public_address ] }
+      private_address:
+        type: string
+        default: { get_property: [ SELF, host, private_address ] }
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          create:
+            inputs:
+              host_ip:
+                type: string
+                required: false
+                default: { get_attribute: [ SELF, public_address] }
+            implementation:
+              primary: install
+              timeout: 0
+    artifacts:
+      install:
+        type: radon.artifacts.Ansible
+        file: dockerinstall.yaml

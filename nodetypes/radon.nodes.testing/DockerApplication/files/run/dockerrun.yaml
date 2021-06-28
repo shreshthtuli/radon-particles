@@ -1,0 +1,8 @@
+---
+- name: create
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Execute Docker application
+      shell:
+        cmd: ssh root@{{ host_ip }} 'docker run -name dockerapp -itd {{ image }} "{{ cmd }}"'
