@@ -7,18 +7,24 @@ node_types:
       targetNamespace: "radon.nodes.testing"
       abstract: "false"
       final: "false"
-    properties:
-      public_address:
-        type: string
-        description: Host's IP or hostname
-      username:
-        type: string
-        description: Host's username
     capabilities:
       host:
         occurrences: [ 1, 1 ]
         valid_source_types: [ radon.nodes.testing.DockerApplication ]
         type: radon.capabilities.container.DockerRuntime
+    requirements:
+      - host:
+          capability: tosca.capabilities.Compute
+          node: radon.nodes.OperableCompute
+          relationship: tosca.relationships.HostedOn
+          occurrences: [ 1, 1 ]
+    attributes:
+      public_address:
+        type: string
+        default: { get_property: [ SELF, host, public_address ] }
+      private_address:
+        type: string
+        default: { get_property: [ SELF, host, private_address ] }
     interfaces:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard

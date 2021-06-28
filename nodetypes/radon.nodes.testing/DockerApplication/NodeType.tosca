@@ -15,7 +15,7 @@ node_types:
         type: string
         description: Command to execute
     requirements:
-      - host:
+      - engine:
           capability: radon.capabilities.container.DockerRuntime
           node: radon.nodes.abstract.ContainerRuntime
           relationship: tosca.relationships.HostedOn
