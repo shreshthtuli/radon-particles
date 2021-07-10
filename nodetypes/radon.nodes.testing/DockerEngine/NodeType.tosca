@@ -19,6 +19,9 @@ node_types:
           relationship: tosca.relationships.HostedOn
           occurrences: [ 1, 1 ]
     attributes:
+      name:
+        type: string
+        default: { get_property: [ SELF, host, name ] }
       public_address:
         type: string
         default: { get_property: [ SELF, host, public_address ] }
