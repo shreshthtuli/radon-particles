@@ -28,6 +28,16 @@ node_types:
       private_address:
         type: string
         default: { get_property: [ SELF, host, private_address ] }
+    properties:
+      private_address:
+        type: string
+        default: { get_property: [ SELF, host, private_address ] }
+      name:
+        type: string
+        default: { get_property: [ SELF, host, name ] }
+      public_address:
+        type: string
+        default: { get_property: [ SELF, host, public_address ] }
     interfaces:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
