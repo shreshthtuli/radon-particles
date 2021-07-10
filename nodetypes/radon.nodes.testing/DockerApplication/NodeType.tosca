@@ -35,6 +35,10 @@ node_types:
                 type: string
                 required: true
                 default: { get_property: [ SELF, host, public_address ] }
+              username:
+                type: string
+                required: true
+                default: { get_property: [ SELF, host, name ] }
               cmd:
                 type: string
                 required: true
