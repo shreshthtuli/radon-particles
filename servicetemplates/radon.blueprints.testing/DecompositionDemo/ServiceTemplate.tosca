@@ -10,10 +10,6 @@ topology_template:
         x: "941"
         y: "433"
         displayName: "DockerEngine"
-      properties:
-        name: "test"
-        public_address: "worker2"
-        username: "root"
       requirements:
         - host:
             node: OperableCompute_0
@@ -25,6 +21,9 @@ topology_template:
         x: "1441"
         y: "431"
         displayName: "OperableCompute"
+      properties:
+        name: "st220"
+        public_address: "picard04.doc.ac.ic.uk"
     DockerApplication_0:
       type: radon.nodes.testing.DockerApplication
       metadata:
