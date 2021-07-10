@@ -23,7 +23,7 @@ topology_template:
         displayName: "OperableCompute"
       properties:
         name: "st220"
-        public_address: "picard04.doc.ac.ic.uk"
+        public_address: "picard04.doc.ic.ac.uk"
     DockerApplication_0:
       type: radon.nodes.testing.DockerApplication
       metadata:
