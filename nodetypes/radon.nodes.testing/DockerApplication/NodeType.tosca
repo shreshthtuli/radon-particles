@@ -1,18 +1,5 @@
 tosca_definitions_version: tosca_simple_yaml_1_3
 
-imports:
-  - file: radonnodesabstract__ContainerApplication.tosca
-    namespace_uri: radon.nodes.abstract
-    namespace_prefix: radonnodesabstract
-  - file: radonartifacts__Ansible.tosca
-    namespace_uri: radon.artifacts
-    namespace_prefix: radonartifacts
-  - file: radoncapabilitiescontainer__DockerRuntime.tosca
-    namespace_uri: radon.capabilities.container
-    namespace_prefix: radoncapabilitiescontainer
-  - file: radonnodesabstract__ContainerRuntime.tosca
-    namespace_uri: radon.nodes.abstract
-    namespace_prefix: radonnodesabstract
 node_types:
   radon.nodes.testing.DockerApplication:
     derived_from: radon.nodes.abstract.ContainerApplication
@@ -57,7 +44,7 @@ node_types:
                 required: true
                 default: { get_attribute: [ SELF, engine, name ] }
             implementation:
-              primary: /nodetypes/radon.nodes.testing/DockerApplication/files/run/dockerrun.yaml
+              primary: run
               timeout: 0
           delete:
             inputs:
@@ -66,12 +53,12 @@ node_types:
                 required: true
                 default: { get_property: [ SELF, engine, public_address ] }
             implementation:
-              primary: /nodetypes/radon.nodes.testing/DockerApplication/files/del/docekrdel.yaml
+              primary: del
               timeout: 0
     artifacts:
       del:
         type: radon.artifacts.Ansible
-        file: /nodetypes/radon.nodes.testing/DockerApplication/files/del/docekrdel.yaml
+        file: docekrdel.yaml
       run:
         type: radon.artifacts.Ansible
-        file: /nodetypes/radon.nodes.testing/DockerApplication/files/run/dockerrun.yaml
+        file: dockerrun.yaml
