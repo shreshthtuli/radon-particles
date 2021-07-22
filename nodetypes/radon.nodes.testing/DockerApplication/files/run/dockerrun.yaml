@@ -4,4 +4,4 @@
   gather_facts: false
   tasks:
     - name: Execute Docker application
-      shell: ssh {{ username }}@{{ host_ip }} 'docker run --name dockerapp -itd {{ image }} "{{ cmd }}"'
+      shell: ssh {{ username }}@{{ host_ip }} 'docker run -itd {{ image }} "{{ cmd }}"'
