@@ -35,7 +35,7 @@ topology_template:
         name: "test"
         cmd: "ls"
       requirements:
-        - engine:
+        - host:
             node: DockerEngine_0
             relationship: con_HostedOn_0
             capability: host
